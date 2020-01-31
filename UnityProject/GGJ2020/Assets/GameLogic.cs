@@ -12,7 +12,7 @@ public class GameLogic : MonoBehaviour
     public List<PlayerObj> playersData = new List<PlayerObj>();
     public Text onscreenLog;
     public Transform[] perPlayerCameras;
-
+    public Material clayMat;
 
     private void Awake()
     {
@@ -170,22 +170,28 @@ public class GameLogic : MonoBehaviour
     public void InteractWithSculpture (int playerID, float coordX, float coordY)
     {
         onscreenLog.text = $"Player with id of {playerID} touched the screen at x: {coordX} y: {coordY} ";
+
+        GameObject newInteractPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        newInteractPoint.transform.localScale = Vector3.one * 0.5f;
+        newInteractPoint.transform.parent = perPlayerCameras[playerID].transform;
+        newInteractPoint.transform.position = new Vector3(0, 0, 0);
+        newInteractPoint.transform.localPosition = new Vector3(
+            newInteractPoint.transform.localPosition.x + (coordX / 100),
+            newInteractPoint.transform.localPosition.y + (coordY / 100),
+            10
+        );
+        newInteractPoint.transform.parent = transform.parent;
+
+
         PlayerObj player = playersData.FirstOrDefault(p => p.pID == playerID);
         if (player != null)
         {
             if (player.interactMode == "add")
             {
                 Debug.Log("Adding a new chunk of clay now!");
-                GameObject newClay = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                newClay.transform.parent = perPlayerCameras[playerID].transform;
-                newClay.transform.position = new Vector3(0, 0, 0);
-                //newClay.transform.position = perPlayerCameras[playerID].transform.position + (perPlayerCameras[playerID].transform.forward * 10);
-                newClay.transform.localPosition = new Vector3(
-                    newClay.transform.localPosition.x + (coordX / 100),
-                    newClay.transform.localPosition.y + (coordY / 100),
-                    10
-                );
-                newClay.transform.parent = transform.parent;
+
+                // set the newInteractPoint material and keep it
+                newInteractPoint.GetComponent<Renderer>().sharedMaterial = clayMat;
 
 
                 //newClay.transform.localPosition = new Vector3(
@@ -195,6 +201,19 @@ public class GameLogic : MonoBehaviour
                 //    );
             } else if (player.interactMode == "subtract")
             {
+                // check if newInteractPoint is colliding with anything, and destroy all colliding objects
+
+                Collider[] hitColliders = Physics.OverlapSphere(newInteractPoint.transform.position, 0.5f);
+                DestroyImmediate(newInteractPoint);
+                int i = 0;
+                while (i < hitColliders.Length)
+                {
+                    if (hitColliders[i].gameObject.name.ToLower().Contains("sphere"))
+                    {
+                        Destroy(hitColliders[i].gameObject);
+                    }
+                    i++;
+                }
 
             }
 

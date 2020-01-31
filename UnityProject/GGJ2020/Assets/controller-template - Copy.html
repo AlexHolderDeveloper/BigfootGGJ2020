@@ -7,8 +7,51 @@
 
 		/* the style sheet dictates what our elements (buttons, backgrounds etc.) will look like. */
 
+		:root {
+			--sculpture001URL: url("images/sculptures/sculpture001.png");
+			--sculpture002URL: url("images/sculptures/sculpture002.png");
+			--sculpture003URL: url("images/sculptures/sculpture003.png");
+			--sculpture004URL: url("images/sculptures/sculpture004.png");
+			--sculpture005URL: url("images/sculptures/sculpture005.png");
+			--sculpture006URL: url("images/sculptures/sculpture006.png");
+			--sculpture007URL: url("images/sculptures/sculpture007.png");
+			--sculpture008URL: url("images/sculptures/sculpture008.png");
+		}
+
 		body {
 			margin: 0px;
+		}
+
+		.sculpture001 {
+					background-image: var(--sculpture001URL);
+}
+
+		.sculpture002 {
+					background-image: var(--sculpture002URL);
+}
+
+		.sculpture003 {
+					background-image: var(--sculpture003URL);
+}
+
+		.sculpture004 {
+			background-image: var(--sculpture004URL);
+		}
+
+		.sculpture005 {
+			background-image: var(--sculpture005URL);
+		}
+
+		.sculpture006 {
+			background-image: var(--sculpture006URL);
+		}
+
+		.sculpture007 {
+			background-image: var(--sculpture007URL);
+		}
+
+		.sculpture008 {
+			background-image: var(--sculpture008URL);
 		}
 
 		#interact-button {
@@ -56,6 +99,14 @@
 			width: 100%;
 			background-color: teal;
 		}
+
+		#sculptureImg {
+			height: 90%;
+			width: 90%;
+			background-color: lightyellow;
+			background-repeat:no-repeat;
+			background-size: contain;
+		}
 	</style>
 
 	<script type="text/javascript">
@@ -63,6 +114,10 @@
 		var airconsole;
 		var xCoord = 0;
 		var yCoord = 0;
+
+
+
+
 
 		function App() {
 
@@ -153,7 +208,9 @@
 
 	<div class="container">
 		<div id="gamescreen">
-			blah blah
+
+			<div id="sculptureImg"></div>
+
 		</div>
 
 		<div id="footer-section">
@@ -168,7 +225,9 @@
 
 	<script>
 		document.getElementById("gamescreen").addEventListener('click', getPosition);
-
+		var sculptureScreen = document.getElementById("sculptureImg");
+		//sculptureScreen.src = potentialImages[Math.round(Math.random() * potentialImages.length)].src;
+		sculptureScreen.classList.add(`sculpture00${Math.round(Math.random() * 8)}`);
 	</script>
 
 
