@@ -23,6 +23,7 @@
 
 		var airconsole;
 
+
 		function App() {
 
 			/* JavaScript / Functionality. Add functions and evens here */
@@ -52,6 +53,18 @@
 					}
 				}
 			}
+
+
+			this.airconsole.onMessage = function (from, data) {
+				if (from == AirConsole.SCREEN && data.vibrate) {
+					navigator.vibrate(data.vibrate);
+					console.log("Vibrating: " + data.vibrate);
+				}
+			};
+
+
+
+
 		}
 
 

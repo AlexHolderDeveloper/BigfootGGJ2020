@@ -17,11 +17,28 @@
 			background-size: contain;
 			background-repeat: no-repeat;
 		}
+
+		#footer-section {
+			background-color: gray;
+			width: 100vw;
+			height: 20vh;
+			display: flex;
+		}
+
+		.mode-button {
+			width: 75%;
+			height: 75%;
+			background-color: white;
+			margin: 10px;
+			padding: 20px;
+			text-align: center;
+		}
 	</style>
 
 	<script type="text/javascript">
 
 		var airconsole;
+
 
 		function App() {
 
@@ -52,6 +69,18 @@
 					}
 				}
 			}
+
+
+			this.airconsole.onMessage = function (from, data) {
+				if (from == AirConsole.SCREEN && data.vibrate) {
+					navigator.vibrate(data.vibrate);
+					console.log("Vibrating: " + data.vibrate);
+				}
+			};
+
+
+
+
 		}
 
 
@@ -65,6 +94,12 @@
 </head>
 <body onload="window.app = new App()">
 	<!-- Add your HTML elements here -->
-	<div id="interact-button" ontouchstart="window.app.sendMessageToScreen('interact')"></div>
+	<!--<div id="interact-button" ontouchstart="window.app.sendMessageToScreen('interact')"></div>-->
+	<div id="footer-section">
+		<div id="addmode-button" class="mode-button" ontouchstart="window.app.sendMessageToScreen('setmodeADD')">ATTACH</div>
+		<div id="subtractmode-button" class="mode-button" ontouchstart="window.app.sendMessageToScreen('setmodeSUBTRACT')">CHIP</div>
+	</div>
+	
+
 </body>
 </html>
