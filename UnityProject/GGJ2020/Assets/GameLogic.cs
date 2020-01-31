@@ -9,7 +9,7 @@ public class GameLogic : MonoBehaviour
 {
     
     public List<PlayerObj> playersData = new List<PlayerObj>();
-
+    public Text onscreenLog;
 
 
     private void Awake()
@@ -44,15 +44,31 @@ public class GameLogic : MonoBehaviour
 
     public void OnConnect (int device_id)
     {
+        AirConsole.instance.SetActivePlayers();
         Debug.Log($"Device with ID of {device_id} has connected!");
+
+        //PlayerObj playerToSet = playersData.FirstOrDefault<PlayerObj>(p => p.pID == playerID);
+
+
+
         PlayerObj newPlayerData = new PlayerObj();
         newPlayerData.pID = AirConsole.instance.ConvertDeviceIdToPlayerNumber(device_id);
         newPlayerData.score = 0;
         newPlayerData.numOfChips = 0;
         newPlayerData.numOfAttaches = 0;
 
-        playersData.Add(newPlayerData);
-        MakePlayerVibrate(newPlayerData.pID);
+        PlayerObj playerCopyCheck = playersData.FirstOrDefault<PlayerObj>(p => p.pID == newPlayerData.pID);
+        if (playerCopyCheck.pID == null)
+        {
+            onscreenLog.text = JsonUtility.ToJson(newPlayerData);
+            playersData.Add(newPlayerData);
+            MakePlayerVibrate((int)newPlayerData.pID);
+        } else
+        {
+            onscreenLog.text = $"Welcome back Player {newPlayerData.pID}!";
+        }
+
+
     }
 
     public void OnDisconnect (int device_ID)
@@ -81,7 +97,7 @@ public class GameLogic : MonoBehaviour
                     SetPlayerMode(messagingPID, "subtract");
                     break;
                 case "playerInteract":
-                    InteractWithSculpture(messagingPID, data.Value<float>(data["coordX"]), data.Value<float>(data["coordY"]));
+                    InteractWithSculpture(messagingPID, float.Parse(data["coordX"].ToString()), float.Parse(data["coordY"].ToString()));
                     break;
                 default:
                     break;
@@ -146,8 +162,9 @@ public class GameLogic : MonoBehaviour
 
     public void InteractWithSculpture (int playerID, float coordX, float coordY)
     {
+        onscreenLog.text = $"Player with id of {playerID} touched the screen at x: {coordX} y: {coordY} ";
         PlayerObj player = playersData.FirstOrDefault<PlayerObj>(p => p.pID == playerID);
-        if (player.pID != -1 && player.pID != 0)
+        if (player.pID != -1)
         {
             if (player.interactMode == "add")
             {

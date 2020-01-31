@@ -7,6 +7,10 @@
 
 		/* the style sheet dictates what our elements (buttons, backgrounds etc.) will look like. */
 
+		body {
+			margin: 0px;
+		}
+
 		#interact-button {
 			background-image: url("button.png");
 			position: absolute;
@@ -17,18 +21,55 @@
 			background-size: contain;
 			background-repeat: no-repeat;
 		}
+
+		#footer-section {
+			background-color: gray;
+			width: 100vw;
+			height: 20vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: absolute;
+			bottom: 0;
+		}
+
+		.mode-button {
+			border-radius: 5px;
+			width: 75%;
+			height: 75%;
+			background-color: white;
+			margin: 10px;
+			text-align: center;
+			vertical-align: middle;
+			display: inline-block;
+			position: relative;
+		}
+
+		h1 {
+			display: inline-block;
+			font-size: 8vw;
+			vertical-align: middle;
+		}
+
+		#gamescreen {
+			height: 80vh;
+			width: 100%;
+			background-color: teal;
+		}
 	</style>
 
 	<script type="text/javascript">
 
 		var airconsole;
-
+		var xCoord = 0;
+		var yCoord = 0;
 
 		function App() {
 
 			/* JavaScript / Functionality. Add functions and evens here */
 
 			this.airconsole = new AirConsole({ "orientation": "portrait" });
+
 
 			/*
 			 * Here we are adding support for mouse events manually.
@@ -73,11 +114,47 @@
 			this.airconsole.message(AirConsole.SCREEN, { "action": msg });
 		};
 
+		App.prototype.sendInteractionToScreen = function (data) {
+			// coordX
+			this.airconsole.message(AirConsole.SCREEN, { "action": "playerInteract", "coordX": xCoord, "coordY": yCoord });
+			console.log("Sending interaction to SCREEN now");
+		};
+
+
+		function getPosition(e) {
+			var rect = e.target.getBoundingClientRect();
+			xCoord = Math.floor(e.clientX - rect.left);
+			yCoord = Math.floor(e.clientY - rect.top);
+			console.log("updating position now");
+			App.sendInteractionToScreen();
+		}
 
 	</script>
 </head>
 <body onload="window.app = new App()">
 	<!-- Add your HTML elements here -->
-	<div id="interact-button" ontouchstart="window.app.sendMessageToScreen('interact')"></div>
+	<!--<div id="interact-button" ontouchstart="window.app.sendMessageToScreen('interact')"></div>-->
+
+	<div class="container">
+		<div id="gamescreen">
+			blah blah
+		</div>
+
+		<div id="footer-section">
+			<div id="addmode-button" class="mode-button" ontouchstart="window.app.sendMessageToScreen('setmodeADD')">
+				<h1>ATTACH</h1>
+			</div>
+			<div id="subtractmode-button" class="mode-button" ontouchstart="window.app.sendMessageToScreen('setmodeSUBTRACT')">
+				<h1>CHIP</h1>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		document.getElementById("gamescreen").addEventListener('click', getPosition);
+
+	</script>
+
+
 </body>
 </html>
