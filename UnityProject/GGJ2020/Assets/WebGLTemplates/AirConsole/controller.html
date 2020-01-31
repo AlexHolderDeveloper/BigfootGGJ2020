@@ -123,8 +123,24 @@
 
 		function getPosition(e) {
 			var rect = e.target.getBoundingClientRect();
-			xCoord = Math.floor(e.clientX - rect.left);
-			yCoord = Math.floor(e.clientY - rect.top);
+			//xCoord = Math.floor(e.clientX - rect.left);
+			//yCoord = Math.floor(e.clientY - rect.top);
+
+			var objCenterX = rect.width / 2;
+			var objCenterY = rect.height / 2;
+
+			var xCoordFromCenter = e.clientX - objCenterX;
+			var yCoordFromCenter = e.clientY - objCenterY;
+			if (yCoordFromCenter > 0) {
+				yCoordFromCenter = Math.abs(yCoordFromCenter) * -1;
+			} else {
+				yCoordFromCenter = Math.abs(yCoordFromCenter);
+			}
+
+			console.log("X coord from center: " + xCoordFromCenter);
+			console.log("Y coord from center: " + yCoordFromCenter);
+			xCoord = xCoordFromCenter;
+			yCoord = yCoordFromCenter;
 			console.log("updating position now");
 			window.app.sendInteractionToScreen();
 		}

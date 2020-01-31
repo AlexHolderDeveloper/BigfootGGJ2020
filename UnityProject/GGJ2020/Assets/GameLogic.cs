@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ public class GameLogic : MonoBehaviour
     
     public List<PlayerObj> playersData = new List<PlayerObj>();
     public Text onscreenLog;
+    public Transform[] perPlayerCameras;
 
 
     private void Awake()
@@ -51,14 +53,16 @@ public class GameLogic : MonoBehaviour
 
 
 
-        PlayerObj newPlayerData = new PlayerObj();
-        newPlayerData.pID = AirConsole.instance.ConvertDeviceIdToPlayerNumber(device_id);
-        newPlayerData.score = 0;
-        newPlayerData.numOfChips = 0;
-        newPlayerData.numOfAttaches = 0;
+        PlayerObj newPlayerData = new PlayerObj
+        {
+            pID = AirConsole.instance.ConvertDeviceIdToPlayerNumber(device_id),
+            score = 0,
+            numOfChips = 0,
+            numOfAttaches = 0
+        };
 
-        PlayerObj playerCopyCheck = playersData.FirstOrDefault<PlayerObj>(p => p.pID == newPlayerData.pID);
-        if (playerCopyCheck.pID == null)
+        PlayerObj playerCopyCheck = playersData.FirstOrDefault(p => p.pID == newPlayerData.pID);
+        if (playerCopyCheck == null)
         {
             onscreenLog.text = JsonUtility.ToJson(newPlayerData);
             playersData.Add(newPlayerData);
@@ -81,14 +85,16 @@ public class GameLogic : MonoBehaviour
 
     public void OnMessage(int fromDeviceID, JToken data)
     {
-        Debug.Log("message from " + fromDeviceID + ", data: " + data);
+        int messagingPID = AirConsole.instance.ConvertDeviceIdToPlayerNumber(fromDeviceID);
+
+        //Debug.Log("message from " + fromDeviceID + ", data: " + data);
+        Debug.Log("message from " + messagingPID + ", data: " + data);
         if (data["action"] != null)
         {
-            int messagingPID = AirConsole.instance.ConvertDeviceIdToPlayerNumber(fromDeviceID);
             switch (data["action"].ToString())
             {
                 case "interact":
-                    Camera.main.backgroundColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+                    Camera.main.backgroundColor = new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f));
                     break;
                 case "setmodeADD":
                     SetPlayerMode(messagingPID, "add");
@@ -152,10 +158,11 @@ public class GameLogic : MonoBehaviour
 
     public void SetPlayerMode(int playerID, string modeToSet)
     {
-        PlayerObj playerToSet = playersData.FirstOrDefault<PlayerObj>(p => p.pID == playerID);
-        if (playerToSet.pID != -1 && playerToSet.pID != 0)
+        PlayerObj playerToSet = playersData.FirstOrDefault(p => p.pID == playerID);
+        if (playerToSet != null)
         {
             playerToSet.interactMode = modeToSet;
+            Debug.Log("Player mode updated! It is now: " + modeToSet);
         }
     }
 
@@ -163,12 +170,29 @@ public class GameLogic : MonoBehaviour
     public void InteractWithSculpture (int playerID, float coordX, float coordY)
     {
         onscreenLog.text = $"Player with id of {playerID} touched the screen at x: {coordX} y: {coordY} ";
-        PlayerObj player = playersData.FirstOrDefault<PlayerObj>(p => p.pID == playerID);
-        if (player.pID != -1)
+        PlayerObj player = playersData.FirstOrDefault(p => p.pID == playerID);
+        if (player != null)
         {
             if (player.interactMode == "add")
             {
+                Debug.Log("Adding a new chunk of clay now!");
+                GameObject newClay = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                newClay.transform.parent = perPlayerCameras[playerID].transform;
+                newClay.transform.position = new Vector3(0, 0, 0);
+                //newClay.transform.position = perPlayerCameras[playerID].transform.position + (perPlayerCameras[playerID].transform.forward * 10);
+                newClay.transform.localPosition = new Vector3(
+                    newClay.transform.localPosition.x + (coordX / 100),
+                    newClay.transform.localPosition.y + (coordY / 100),
+                    10
+                );
+                newClay.transform.parent = transform.parent;
 
+
+                //newClay.transform.localPosition = new Vector3(
+                //    newClay.transform.localPosition.x + (coordX / 100),
+                //    newClay.transform.localPosition.y + (coordY / 100),
+                //    newClay.transform.localPosition.z
+                //    );
             } else if (player.interactMode == "subtract")
             {
 

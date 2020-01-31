@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct PlayerObj
+public class PlayerObj
 {
     public int? pID;
     public int score;

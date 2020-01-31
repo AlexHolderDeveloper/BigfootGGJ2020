@@ -1702,6 +1702,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playersData: []
   onscreenLog: {fileID: 1012992446}
+  perPlayerCameras:
+  - {fileID: 725623659}
+  - {fileID: 1553815066}
+  - {fileID: 1263174956}
+  - {fileID: 1156616488}
+  - {fileID: 1767416307}
+  - {fileID: 2068263401}
+  - {fileID: 2125797127}
+  - {fileID: 193016026}
 --- !u!4 &1850643296
 Transform:
   m_ObjectHideFlags: 0
