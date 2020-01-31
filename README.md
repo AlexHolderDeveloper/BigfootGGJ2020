@@ -15,11 +15,6 @@ Chosen diversifiers for this project are:
 * Party Maker (Sponsored by AirConsole) -
 	* Use AirConsole to make a computer game that uses smartphones as controllers (learn how to do this here). https://developers.airconsole.com/#!/global_game_jam
 		* The core game loop involves multiplayer using AirConsole to control a game running on the PC.
-
-* III -
-	* There must never be more than three items visible on the screen at a time.
-		* The gameplay involves a single sculpture on a featureless plane, with nothing (solid or gradient colour) in the background.
-		* The user interface is designed so that only three buttons, prompts, labels, or other UI elements are on screen at any time.
         
 * GGJ20 - 
 	* Your Game takes exactly 20 seconds to play.
