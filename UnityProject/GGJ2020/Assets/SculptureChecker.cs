@@ -45,7 +45,27 @@ public class SculptureChecker : MonoBehaviour
         float width = maxX - minX;
         float height = maxY - minY;
         float area = width * height;
-        float percentage = area / (Screen.width * Screen.height) * 100.0f;
+        float percentage = area / (relevantCamera.pixelWidth * relevantCamera.pixelHeight) * 100.0f;
         return percentage;
+    }
+
+
+    public float CalcRendTextPercentage(Camera relevantCamera)
+    {
+        RenderTexture rt = relevantCamera.targetTexture;
+        Texture2D textureToCount = new Texture2D(512, 512);
+        textureToCount.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+        Color[] pixelsByColor = textureToCount.GetPixels();
+        // 512 x 512 = 262144 total pixels
+        List<Color> clayPixels = new List<Color>();
+        foreach (Color color in pixelsByColor)
+        {
+            if (color == Color.red)
+            {
+                clayPixels.Add(color);
+            }
+        }
+
+        return (clayPixels.Count / 262144) * 100;
     }
 }

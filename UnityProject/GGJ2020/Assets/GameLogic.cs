@@ -13,6 +13,7 @@ public class GameLogic : MonoBehaviour
     public Text onscreenLog;
     public Transform[] perPlayerCameras;
     public Material clayMat;
+    public Text[] playerNameText;
 
     public SphereCollider sphereCol;
     public MeshFilter meshFil;
@@ -40,8 +41,9 @@ public class GameLogic : MonoBehaviour
         //logWindow.text = "Connecting... \n \n";
 
         //InvokeRepeating("MakeAllPlayersVibrate", 3, 3);
-        InvokeRepeating("UpdatePlayerScreenClayPercentages", 5, 5);
+        //InvokeRepeating("UpdatePlayerScreenClayPercentages", 5, 5);
 
+        UpdateOnscreenPlayerInfo();
     }
 
 
@@ -64,7 +66,8 @@ public class GameLogic : MonoBehaviour
             pID = AirConsole.instance.ConvertDeviceIdToPlayerNumber(device_id),
             score = 0,
             numOfChips = 0,
-            numOfAttaches = 0
+            numOfAttaches = 0,
+            playerName = AirConsole.instance.GetNickname(device_id)
         };
 
         PlayerObj playerCopyCheck = playersData.FirstOrDefault(p => p.pID == newPlayerData.pID);
@@ -73,6 +76,7 @@ public class GameLogic : MonoBehaviour
             onscreenLog.text = JsonUtility.ToJson(newPlayerData);
             playersData.Add(newPlayerData);
             MakePlayerVibrate((int)newPlayerData.pID);
+            UpdateOnscreenPlayerInfo();
         } else
         {
             onscreenLog.text = $"Welcome back Player {newPlayerData.pID}!";
@@ -230,27 +234,19 @@ public class GameLogic : MonoBehaviour
     }
 
 
-    public void UpdatePlayerScreenClayPercentages ()
+    
+
+
+    public void UpdateOnscreenPlayerInfo()
     {
-        foreach (PlayerObj player in playersData)
+        foreach (Text nameLabel in playerNameText)
         {
-            player.clayPercentage = 0;
-            // get camera relevant to player 
-            Camera relevantCamera = perPlayerCameras[(int)player.pID].GetComponent<Camera>();
-
-            // run SculptureChecker(relevantCamera)
-            SculptureChecker[] allClay = FindObjectsOfType<SculptureChecker>();
-            foreach (SculptureChecker sculpture in allClay)
-            {
-                // assign result of SculptureChecker to player data obj
-                player.clayPercentage += sculpture.CalcScreenPercentage(relevantCamera);
-                Debug.Log($"Player {player.pID} has {player.clayPercentage}% of the screen covered in clay");
-            }
-
-
-
+            nameLabel.text = "";
         }
 
+        for (int i = 0; i < playersData.Count; i++)
+        {
+            playerNameText[i].text = playersData[i].playerName;
+        }
     }
-
 }

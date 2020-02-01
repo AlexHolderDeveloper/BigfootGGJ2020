@@ -1,0 +1,244 @@
+
+<html>
+<head>
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.7.0.js"></script>
+	<style type=text/css>
+
+		/* the style sheet dictates what our elements (buttons, backgrounds etc.) will look like. */
+
+		:root {
+			--sculpture001URL: url("images/sculptures/sculpture001.png");
+			--sculpture002URL: url("images/sculptures/sculpture002.png");
+			--sculpture003URL: url("images/sculptures/sculpture003.png");
+			--sculpture004URL: url("images/sculptures/sculpture004.png");
+			--sculpture005URL: url("images/sculptures/sculpture005.png");
+			--sculpture006URL: url("images/sculptures/sculpture006.png");
+			--sculpture007URL: url("images/sculptures/sculpture007.png");
+			--sculpture008URL: url("images/sculptures/sculpture008.png");
+		}
+
+		body {
+			margin: 0px;
+		}
+
+		.sculpture001 {
+					background-image: var(--sculpture001URL);
+}
+
+		.sculpture002 {
+					background-image: var(--sculpture002URL);
+}
+
+		.sculpture003 {
+					background-image: var(--sculpture003URL);
+}
+
+		.sculpture004 {
+			background-image: var(--sculpture004URL);
+		}
+
+		.sculpture005 {
+			background-image: var(--sculpture005URL);
+		}
+
+		.sculpture006 {
+			background-image: var(--sculpture006URL);
+		}
+
+		.sculpture007 {
+			background-image: var(--sculpture007URL);
+		}
+
+		.sculpture008 {
+			background-image: var(--sculpture008URL);
+		}
+
+		#interact-button {
+			background-image: url("button.png");
+			position: absolute;
+			top: 20%;
+			left: 10%;
+			width: 80%;
+			height: 60%;
+			background-size: contain;
+			background-repeat: no-repeat;
+		}
+
+		#footer-section {
+			background-color: gray;
+			width: 100vw;
+			height: 20vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: absolute;
+			bottom: 0;
+		}
+
+		.mode-button {
+			border-radius: 5px;
+			width: 75%;
+			height: 75%;
+			background-color: white;
+			margin: 10px;
+			text-align: center;
+			vertical-align: middle;
+			display: inline-block;
+			position: relative;
+		}
+
+		h1 {
+			display: inline-block;
+			font-size: 8vw;
+			vertical-align: middle;
+		}
+
+		.container {
+
+		}
+
+		#gamescreen {
+
+			height: 80vh;
+			width: 100%;
+			background-color: teal;
+						display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		#sculptureImg {
+			height: 90%;
+			width: 90%;
+			background-color: lightyellow;
+			background-repeat: no-repeat;
+			background-size: 70% auto;
+			background-position: center;
+		}
+	</style>
+
+	<script type="text/javascript">
+
+		var airconsole;
+		var xCoord = 0;
+		var yCoord = 0;
+
+
+
+
+
+		function App() {
+
+			/* JavaScript / Functionality. Add functions and evens here */
+
+			this.airconsole = new AirConsole({ "orientation": "portrait" });
+
+
+			/*
+			 * Here we are adding support for mouse events manually.
+			 * --> WE STRONGLY ENCOURAGE YOU TO USE THE AIRCONSOLE CONTROLS LIBRARY
+			 * WHICH IS EVEN BETTER (BUT WE DONT WANT TO BLOAT THE CODE HERE).
+			 * https://github.com/AirConsole/airconsole-controls/
+			 *
+			 * DO NOT USE ONCLICK HANDLERS.
+			 * THEY ADD A 200MS DELAY!
+			 */
+			if (!("ontouchstart" in document.createElement("div"))) {
+				var elements = document.getElementsByTagName("*");
+				for (var i = 0; i < elements.length; ++i) {
+					var element = elements[i];
+					var ontouchstart = element.getAttribute("ontouchstart");
+					if (ontouchstart) {
+						element.setAttribute("onmousedown", ontouchstart);
+					}
+					var ontouchend = element.getAttribute("ontouchend");
+					if (ontouchend) {
+						element.setAttribute("onmouseup", ontouchend);
+					}
+				}
+			}
+
+
+			this.airconsole.onMessage = function (from, data) {
+				if (from == AirConsole.SCREEN && data.vibrate) {
+					navigator.vibrate(data.vibrate);
+					console.log("Vibrating: " + data.vibrate);
+				}
+			};
+
+
+
+
+		}
+
+
+		App.prototype.sendMessageToScreen = function (msg) {
+			console.log("button press");
+			this.airconsole.message(AirConsole.SCREEN, { "action": msg });
+		};
+
+		App.prototype.sendInteractionToScreen = function (data) {
+			// coordX
+			this.airconsole.message(AirConsole.SCREEN, { "action": "playerInteract", "coordX": xCoord, "coordY": yCoord });
+			console.log("Sending interaction to SCREEN now");
+		};
+
+
+		function getPosition(e) {
+			var rect = e.target.getBoundingClientRect();
+			//xCoord = Math.floor(e.clientX - rect.left);
+			//yCoord = Math.floor(e.clientY - rect.top);
+
+			var objCenterX = rect.width / 2;
+			var objCenterY = rect.height / 2;
+
+			var xCoordFromCenter = e.clientX - objCenterX;
+			var yCoordFromCenter = e.clientY - objCenterY;
+			if (yCoordFromCenter > 0) {
+				yCoordFromCenter = Math.abs(yCoordFromCenter) * -1;
+			} else {
+				yCoordFromCenter = Math.abs(yCoordFromCenter);
+			}
+
+			console.log("X coord from center: " + xCoordFromCenter);
+			console.log("Y coord from center: " + yCoordFromCenter);
+			xCoord = xCoordFromCenter;
+			yCoord = yCoordFromCenter;
+			console.log("updating position now");
+			window.app.sendInteractionToScreen();
+		}
+
+	</script>
+</head>
+<body onload="window.app = new App()">
+	<!-- Add your HTML elements here -->
+	<!--<div id="interact-button" ontouchstart="window.app.sendMessageToScreen('interact')"></div>-->
+
+	<div class="container">
+		<div id="gamescreen">
+
+			<div id="sculptureImg"></div>
+
+		</div>
+
+		<div id="footer-section">
+			<div id="addmode-button" class="mode-button" ontouchstart="window.app.sendMessageToScreen('setmodeADD')">
+				<h1>ATTACH</h1>
+			</div>
+			<div id="subtractmode-button" class="mode-button" ontouchstart="window.app.sendMessageToScreen('setmodeSUBTRACT')">
+				<h1>CHIP</h1>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		document.getElementById("gamescreen").addEventListener('click', getPosition);
+		var sculptureScreen = document.getElementById("sculptureImg");
+		//sculptureScreen.src = potentialImages[Math.round(Math.random() * potentialImages.length)].src;
+		sculptureScreen.classList.add(`sculpture00${Math.round(Math.random() * 8)}`);
+	</script>
+
+
+</body>
+</html>
