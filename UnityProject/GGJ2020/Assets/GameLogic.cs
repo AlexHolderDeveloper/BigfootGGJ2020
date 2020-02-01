@@ -40,13 +40,14 @@ public class GameLogic : MonoBehaviour
         //logWindow.text = "Connecting... \n \n";
 
         //InvokeRepeating("MakeAllPlayersVibrate", 3, 3);
+        InvokeRepeating("UpdatePlayerScreenClayPercentages", 5, 5);
+
     }
 
 
     public void StartGameRound ()
     {
         AirConsole.instance.SetActivePlayers();
-
     }
 
     public void OnConnect (int device_id)
@@ -201,6 +202,7 @@ public class GameLogic : MonoBehaviour
 
                 // set the newInteractPoint material and keep it
                 newInteractPoint.GetComponent<Renderer>().sharedMaterial = clayMat;
+                newInteractPoint.AddComponent<SculptureChecker>();
 
             } else if (player.interactMode == "subtract")
             {
@@ -226,4 +228,29 @@ public class GameLogic : MonoBehaviour
 
         }
     }
+
+
+    public void UpdatePlayerScreenClayPercentages ()
+    {
+        foreach (PlayerObj player in playersData)
+        {
+            player.clayPercentage = 0;
+            // get camera relevant to player 
+            Camera relevantCamera = perPlayerCameras[(int)player.pID].GetComponent<Camera>();
+
+            // run SculptureChecker(relevantCamera)
+            SculptureChecker[] allClay = FindObjectsOfType<SculptureChecker>();
+            foreach (SculptureChecker sculpture in allClay)
+            {
+                // assign result of SculptureChecker to player data obj
+                player.clayPercentage += sculpture.CalcScreenPercentage(relevantCamera);
+                Debug.Log($"Player {player.pID} has {player.clayPercentage}% of the screen covered in clay");
+            }
+
+
+
+        }
+
+    }
+
 }

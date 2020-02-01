@@ -80,6 +80,7 @@
     <Compile Include="Assets\GameLogic.cs" />
     <Compile Include="Assets\IdleRotate.cs" />
     <Compile Include="Assets\PlayerData.cs" />
+    <Compile Include="Assets\SculptureChecker.cs" />
     <None Include="Assets\AirConsole\README.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/GithubRepos/BigfootGGJ2020/UnityProject/GGJ2020/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

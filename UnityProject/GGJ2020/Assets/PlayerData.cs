@@ -9,6 +9,7 @@ public class PlayerObj
     public int score;
     public int numOfChips;
     public int numOfAttaches;
+    public float clayPercentage;
     public string interactMode;
 }
 
