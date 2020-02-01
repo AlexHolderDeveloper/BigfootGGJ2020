@@ -22,7 +22,10 @@ Chosen diversifiers for this project are:
 		* Each round of sculpting is limited to 20 seconds of gameplay.
        
 	   
-# Sculpture Clash
+# Sculpture Clash!
+
+### GGJ Game Page: https://globalgamejam.org/2020/games/sculpture-clash-3
+### GGJ Jam Site Page: https://globalgamejam.org/2020/jam-sites/aie-sydney
 
 You're a sculptor tasked with repairing someone's very expensive broken sculpture. You're given an image of what your sculpture should look like, and you can do two things to the broken sculpture in front of you to fix your sculpture: 
 1. You can chip bits of the sculpture off.
